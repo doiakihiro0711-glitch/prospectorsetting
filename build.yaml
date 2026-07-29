@@ -30,4 +30,5 @@ include:
   - board: seeeduino_xiao_ble
     shield: settings_reset
   - board: seeeduino_xiao_ble
-    shield: hshs52_dongle prospector_adapter
+    shield: hshs52_dongle
+    cmake-args: -DCONFIG_PROSPECTOR_ADAPTER=y
