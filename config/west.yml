@@ -2,19 +2,40 @@ manifest:
   remotes:
     - name: zmkfirmware
       url-base: https://github.com/zmkfirmware
+    - name: hitsmaxft
+      url-base: https://github.com/hitsmaxft
+    - name: urob
+      url-base: https://github.com/urob
+    - name: janpfischer
+      url-base: https://github.com/janpfischer
     - name: carrefinho
       url-base: https://github.com/carrefinho
-    - name: bwshockley          # ← 追加
+    - name: bwshockley
       url-base: https://github.com/bwshockley
   projects:
     - name: zmk
       remote: zmkfirmware
-      revision: v0.3
-      import: app/west.yml
-    - name: prospector-zmk-module
-      remote: carrefinho
+      revision: 0.3.0
+      clone-depth: 1
+      import:
+        file: app/west.yml
+    - name: zmk-helpers
+      remote: urob
       revision: main
+      clone-depth: 1
+    - name: zmk-rgbled-widget
+      remote: hitsmaxft
+      revision: main
+      clone-depth: 1
+    - name: zmk-dongle-display
+      remote: hitsmaxft
+      revision: main
+      clone-depth: 1
+    - name: zmk-dongle-screen
       remote: bwshockley
       revision: main
+    - name: prospector-zmk-module
+      remote: carrefinho
+      revision: feat/new-status-screens
   self:
     path: config
