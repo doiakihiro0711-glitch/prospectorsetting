@@ -1,0 +1,107 @@
+/*
+ * Copyright (c) 2024 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include "custom_status_screen.h"
+
+
+#include "widgets/brightness_status.h"
+struct zmk_widget_brightness_status brightness_status_widget;
+
+#if CONFIG_DONGLE_SCREEN_OUTPUT_ACTIVE
+#include "widgets/output_status.h"
+static struct zmk_widget_output_status output_status_widget;
+#endif
+
+#if CONFIG_DONGLE_SCREEN_LAYER_ACTIVE
+#include "widgets/layer_status.h"
+static struct zmk_widget_layer_status layer_status_widget;
+
+#include "widgets/layer_roller.h"
+static struct zmk_widget_layer_roller layer_roller_widget;
+#endif
+
+#if CONFIG_DONGLE_SCREEN_BATTERY_ACTIVE
+#include "widgets/battery_status.h"
+static struct zmk_widget_dongle_battery_status dongle_battery_status_widget;
+#endif
+
+#if CONFIG_DONGLE_SCREEN_WPM_ACTIVE
+#include "widgets/wpm_status.h"
+static struct zmk_widget_wpm_status wpm_status_widget;
+#endif
+
+#if CONFIG_DONGLE_SCREEN_MODIFIER_ACTIVE
+#include "widgets/mod_status.h"
+static struct zmk_widget_mod_status mod_widget;
+#endif
+
+#if CONFIG_DONGLE_SCREEN_HID_INDICATORS_ACTIVE
+#include "widgets/hid_indicators.h"
+static struct zmk_widget_hid_indicators hid_indicators_widget;
+#endif
+
+#include <zephyr/logging/log.h>
+LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
+
+lv_style_t global_style;
+
+lv_obj_t *zmk_display_status_screen()
+{
+    lv_obj_t *screen;
+
+    screen = lv_obj_create(NULL);
+    lv_obj_set_style_bg_color(screen, lv_color_hex(0x000000), LV_PART_MAIN);
+    lv_obj_set_style_bg_opa(screen, 255, LV_PART_MAIN);
+
+    lv_style_init(&global_style);
+    // lv_style_set_text_font(&global_style, &lv_font_unscii_8); // ToDo: Font is not recognized
+    lv_style_set_text_color(&global_style, lv_color_white());
+    lv_style_set_text_letter_space(&global_style, 1);
+    lv_style_set_text_line_space(&global_style, 1);
+    lv_obj_add_style(screen, &global_style, LV_PART_MAIN);
+
+/*
+#if CONFIG_DONGLE_SCREEN_LAYER_ACTIVE
+    zmk_widget_layer_status_init(&layer_status_widget, screen);
+    lv_obj_align(zmk_widget_layer_status_obj(&layer_status_widget), LV_ALIGN_LEFT_MID, 20, -10);
+#endif
+*/
+
+#if CONFIG_DONGLE_SCREEN_HID_INDICATORS_ACTIVE
+    zmk_widget_hid_indicators_init(&hid_indicators_widget, screen);
+    lv_obj_align(zmk_widget_hid_indicators_obj(&hid_indicators_widget), LV_ALIGN_RIGHT_MID, -15, 0);
+#endif
+    
+#if CONFIG_DONGLE_SCREEN_OUTPUT_ACTIVE
+    zmk_widget_output_status_init(&output_status_widget, screen);
+    lv_obj_align(zmk_widget_output_status_obj(&output_status_widget), LV_ALIGN_TOP_RIGHT, -15, 15);
+#endif
+
+#if CONFIG_DONGLE_SCREEN_BATTERY_ACTIVE
+    zmk_widget_dongle_battery_status_init(&dongle_battery_status_widget, screen);
+    lv_obj_align(zmk_widget_dongle_battery_status_obj(&dongle_battery_status_widget), LV_ALIGN_BOTTOM_MID, 0, 0);
+#endif
+
+#if CONFIG_DONGLE_SCREEN_WPM_ACTIVE
+    zmk_widget_wpm_status_init(&wpm_status_widget, screen);
+    lv_obj_align(zmk_widget_wpm_status_obj(&wpm_status_widget), LV_ALIGN_TOP_LEFT, 15, 20);
+#endif
+
+#if CONFIG_DONGLE_SCREEN_LAYER_ACTIVE
+    zmk_widget_layer_roller_init(&layer_roller_widget, screen);
+    lv_obj_align(zmk_widget_layer_roller_obj(&layer_roller_widget), LV_ALIGN_LEFT_MID, 10, 0);
+#endif
+
+#if CONFIG_DONGLE_SCREEN_MODIFIER_ACTIVE
+    zmk_widget_mod_status_init(&mod_widget, screen);
+    lv_obj_align(zmk_widget_mod_status_obj(&mod_widget), LV_ALIGN_CENTER, 0, 70);
+#endif
+    
+    zmk_widget_brightness_status_init(&brightness_status_widget, screen);
+    lv_obj_align(zmk_widget_brightness_status_obj(&brightness_status_widget), LV_ALIGN_CENTER, 0, 0);
+
+    return screen;
+}
